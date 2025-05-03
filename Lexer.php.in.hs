@@ -12,25 +12,7 @@ import Location
 -- SEPARATOR
 
 setFilePath :: FilePath -> Alex ()
-setFilePath fp = do
-  alexSetUserState (AlexUserState { filepath = fp })
-
-data AlexTokenTag
-   = AlexTokenTag
-     {
-         tokenRaw :: AlexRawToken,
-         tokenLoc :: Location
-     }
-     deriving ( Show )
-
-data AlexRawToken
-
-     = AlexRawToken_INT Int
-     | AlexRawToken_ID String
-     | AlexRawToken_FLOAT Int
-     | AlexRawToken_STR String
-      
-     deriving ( Show )
+setFilePath fp = alexSetUserState (AlexUserState { filepath = fp })
 
 alexEOF :: Alex AlexTokenTag
 alexEOF = do

@@ -102,6 +102,53 @@ def extract_parts(haskell_filename: pathlib.Path) -> typing.Optional[tuple[str, 
 
     return (parts[0].rstrip() + "\n", parts[1].lstrip())
 
+ALEX_TOKEN_TAG: typing.Final[str] = """
+-- *********
+-- *       *
+-- * Token *
+-- *       *
+-- *********
+data AlexTokenTag
+   = AlexTokenTag
+     {
+         tokenRaw :: AlexRawToken,
+         tokenLoc :: Location
+     }
+     deriving ( Show )
+"""
+
+ALEX_RAW_TOKEN: typing.Final[str] = """
+-- *************
+-- *           *
+-- * Raw Token *
+-- *           *
+-- *************
+data AlexRawToken
+   = AlexRawToken_INT Int
+   | AlexRawToken_ID String
+   | AlexRawToken_FLOAT Int
+   | AlexRawToken_STR String
+"""
+
+WHITE_SPACE: typing.Final[str] = """
+-- ***************
+-- *             *
+-- * white space *
+-- *             *
+-- ***************
+@WHITE_SPACE = $white+
+"""
+
+TOKENS: typing.Final[str] = """
+-- **********
+-- *        *
+-- * tokens *
+-- *        *
+-- **********
+tokens :-
+
+"""
+
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class AlexFile:
 
@@ -111,9 +158,9 @@ class AlexFile:
 
     def __str__(self) -> str:
         return (
-            self.haskell_prologue +
-            self.content +
-            self.haskell_epilogue
+            '{\n' + self.haskell_prologue + '\n}\n\n' +
+            self.content + '\n\n' +
+            self.haskell_epilogue + '}\n'
         )
 
     def store(self, filename: str) -> None:
@@ -135,13 +182,34 @@ class Lexer:
             return AlexFile(
                 haskell_prologue=parts[0],
                 haskell_epilogue=parts[1],
-                content=content
+                content=str(content)
             )
 
         return None
 
-    def _alexify_content(self) -> str:
-        return ""
+    def _alexify_content(self) -> typing.Optional[str]:
+         
+        kws = self.keywords
+        upper = lambda kw: kw.upper()
+        namify = lambda kw: f'@KW_{kw.upper()}'
+        macros = [f'{namify(kw)} = {kw}' for kw in kws]
+        rules = [f'{namify(kw)} {{ lex\' AlexRawToken_{upper(kw)} }}' for kw in kws]
+        variants = [f'   | AlexRawToken_{upper(kw)}' for kw in kws]
+
+        output = ""
+        output += "%wrapper \"monadUserState\"\n\n"
+        output += '\n'.join(macros) + '\n\n'
+        output += WHITE_SPACE
+        output += TOKENS
+        output += '\n'.join(rules) + '\n\n'
+        output += '{\n'
+        output += ALEX_TOKEN_TAG
+        output += ALEX_RAW_TOKEN
+        output += '\n'.join(variants) + '\n'
+        output += '   | TokenEOF\n'
+        output += '   deriving ( Show )\n'
+
+        return output
 
     @staticmethod
     def from_json(filename: pathlib.Path) -> typing.Optional[Lexer]:
