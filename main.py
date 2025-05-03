@@ -102,6 +102,39 @@ def extract_parts(haskell_filename: pathlib.Path) -> typing.Optional[tuple[str, 
 
     return (parts[0].rstrip() + "\n", parts[1].lstrip())
 
+PARENS: typing.Final[str] = """
+-- ***************
+-- *             *
+-- * parentheses *
+-- *             *
+-- ***************
+@LPAREN = \\(
+@RPAREN = \\)
+@LBRACK = \\[
+@RBRACK = \\]
+"""
+
+PUNCTUATION = """
+-- ***************
+-- *             *
+-- * punctuation *
+-- *             *
+-- ***************
+@COLON  = ":"
+@SLASH  = "\\"
+@HYPHEN = \\- 
+@OR     = \\|
+@DOT    = \\.
+"""
+
+KEYWORDS = """
+-- ************
+-- *          *
+-- * keywords *
+-- *          *
+-- ************
+"""
+
 ALEX_TOKEN_TAG: typing.Final[str] = """
 -- *********
 -- *       *
@@ -168,9 +201,15 @@ class AlexFile:
             fl.write(str(self))
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
+class NameRegex:
+
+    name: str
+    regex: str
+
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class Lexer:
 
-    keywords: list[str]
+    data: list[NameRegex]
 
     def build(self, haskell_filename: pathlib.Path) -> typing.Optional[AlexFile]:
 
@@ -189,16 +228,19 @@ class Lexer:
 
     def _alexify_content(self) -> typing.Optional[str]:
          
-        kws = self.keywords
+        data = { entry.name: entry.regex for entry in self.data }
         upper = lambda kw: kw.upper()
         namify = lambda kw: f'@KW_{kw.upper()}'
-        macros = [f'{namify(kw)} = {kw}' for kw in kws]
-        rules = [f'{namify(kw)} {{ lex\' AlexRawToken_{upper(kw)} }}' for kw in kws]
-        variants = [f'   | AlexRawToken_{upper(kw)}' for kw in kws]
+        macros = [f'{namify(name)} = {regex}' for name, regex in data.items()]
+        rules = [f'{namify(name)} {{ lex\' AlexRawToken_{upper(name)} }}' for name in data.keys()]
+        variants = [f'   | AlexRawToken_{upper(name)}' for name in data.keys()]
 
         output = ""
-        output += "%wrapper \"monadUserState\"\n\n"
-        output += '\n'.join(macros) + '\n\n'
+        output += "%wrapper \"monadUserState\"\n"
+        output += PARENS
+        output += PUNCTUATION
+        output += KEYWORDS
+        output += '\n'.join(macros) + '\n'
         output += WHITE_SPACE
         output += TOKENS
         output += '\n'.join(rules) + '\n\n'
@@ -223,19 +265,24 @@ class Lexer:
             logging.error(f"Invalid json file: {filename}")
             return None
 
-        keyowrds = 'keywords'
-        if keyowrds not in data:
-            logging.error(f'Invalid schema: {filename} ( missing: {keyowrds} )')
+        keywords = 'keywords'
+        if keywords not in data:
+            logging.error(f'Invalid schema: {filename} ( missing: {keywords} )')
             return None
-        if not isinstance(data[keyowrds], list):
-            logging.error(f'Invalid json schema: {filename} ({keyowrds} is not a list ) ')
+        if not isinstance(data[keywords], list):
+            logging.error(f'Invalid json schema: {filename} ({keywords} is not a list ) ')
             return None
-        if not all(isinstance(k, str) for k in data[keyowrds]):
-            logging.error(f'Invalid json schema: {filename} (not all {keyowrds} are strings ) ')
+        if not all(
+            isinstance(k, dict) and
+            isinstance(k.get('name'), str) and
+            isinstance(k.get('regex'), str)
+            for k in data[keywords]
+        ):
+            logging.error(f'Invalid json schema: {filename} (not all {keywords} have name and regex value ) ')
             return None
 
         logging.info(f'json has correct schema 😊')
-        return Lexer(keywords=data[keyowrds])
+        return Lexer(data=[NameRegex(name=entry['name'], regex=entry['regex']) for entry in data[keywords]])
 
 def generate_tokens_block(keywords: list[str]) -> str:
     lines = ["tokens :-"]
