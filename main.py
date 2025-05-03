@@ -156,11 +156,11 @@ VALUED_TOKENS: typing.Final[str] = """
 -- *                          *
 -- ****************************
 
-@ID    { lex  AlexRawToken_ID                    }
-@INT   { lex (AlexRawToken_INT . round . read)   }
-@STR   { lex AlexRawToken_STR                    }
-@FLOAT { lex (AlexRawToken_FLOAT . round . read) }
-.      { lexicalError                            }
+@KW_ID    { lex  AlexRawToken_ID                    }
+@KW_INT   { lex (AlexRawToken_INT . round . read)   }
+@KW_STR   { lex AlexRawToken_STR                    }
+@KW_FLOAT { lex (AlexRawToken_FLOAT . round . read) }
+.         { lexicalError                            }
 
 """
 
@@ -222,12 +222,12 @@ class Lexer:
 
         valued_tokens = ['ID', 'STR', 'INT', 'FLOAT'] 
         data = { entry.name: entry.regex for entry in self.data }
-        upper = lambda name: name.upper()
-        namify = lambda name: f'@KW_{name.upper()}'
-        rulify = lambda name: f'{namify(name)} {{ lex\' AlexRawToken_{upper(name)} }}'
+        namify = lambda name: f'@KW_{name}'
+        rulify = lambda name: f'{name} {{ lex\' AlexRawToken_{name} }}'
+        variantify = lambda name: f'   | AlexRawToken_{name}'
         macros = [f'{namify(name)} = {regex}' for name, regex in data.items()]
         rules = [rulify(name) for name in data.keys() if name not in valued_tokens]
-        variants = [f'   | AlexRawToken_{upper(name)}' for name in data.keys()]
+        variants = [variantify(name) for name in data.keys() if name not in valued_tokens]
 
         output = ""
         output += "%wrapper \"monadUserState\"\n\n"
