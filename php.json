@@ -1,5 +1,13 @@
 {
     "keywords": [
+        { "name": "LPAREN", "regex": "\\("},
+        { "name": "RPAREN", "regex": "\\)"},
+        { "name": "LBRACK", "regex": "\\["},
+        { "name": "RBRACK", "regex": "\\]"},
+        { "name": "COLON", "regex": "\":\""},
+        { "name": "SLASH", "regex": "\"\\\""},
+        { "name": "HYPHEN", "regex": "\\-"},
+        { "name": "OR", "regex": "\\|"},
         { "name": "Alias", "regex": "Alias"},
         { "name": "Arg", "regex": "Arg"},
         { "name": "ArrayItem", "regex": "ArrayItem"},
@@ -118,6 +126,11 @@
         { "name": "type", "regex": "type"},
         { "name": "uses", "regex": "uses"},
         { "name": "regex", "regex": "regex"},
-        { "name": "var", "regex": "var"}
+        { "name": "var", "regex": "var"},
+        { "name": "INT", "regex": "[0-9]+" },
+        { "name": "DOT", "regex": "\\\\." },
+        { "name": "FLOAT", "regex": "[0-9]+\\\\.[0-9]+" },
+        { "name": "ID", "regex": "[A-Za-z_\\\\]([A-Za-z_\\\\] | [0-9])*" },
+        { "name": "STR", "regex": "\"Scalar_String\"\\[(?=[0-9]+\":\"[0-9]+($white)\\-($white)[0-9]+\":\"[0-9]+)\\]\\(([\\s]+)\"value: \"[ $printable $white ]*\\n([\\s]+)\\)|\"InterpolatedStringPart\"\\[(?=[0-9]+\":\"[0-9]+($white)\\-($white)[0-9]+\":\"[0-9]+)\\]\\(([\\s]+)\"value: \"[ $printable $white ]*\\n([\\s]+)\\)" }
     ]
 }

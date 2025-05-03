@@ -102,39 +102,6 @@ def extract_parts(haskell_filename: pathlib.Path) -> typing.Optional[tuple[str, 
 
     return (parts[0].rstrip() + "\n", parts[1].lstrip())
 
-PARENS: typing.Final[str] = """
--- ***************
--- *             *
--- * parentheses *
--- *             *
--- ***************
-@LPAREN = \\(
-@RPAREN = \\)
-@LBRACK = \\[
-@RBRACK = \\]
-"""
-
-PUNCTUATION = """
--- ***************
--- *             *
--- * punctuation *
--- *             *
--- ***************
-@COLON  = ":"
-@SLASH  = "\\"
-@HYPHEN = \\- 
-@OR     = \\|
-@DOT    = \\.
-"""
-
-KEYWORDS = """
--- ************
--- *          *
--- * keywords *
--- *          *
--- ************
-"""
-
 ALEX_TOKEN_TAG: typing.Final[str] = """
 -- *********
 -- *       *
@@ -157,10 +124,10 @@ ALEX_RAW_TOKEN: typing.Final[str] = """
 -- *           *
 -- *************
 data AlexRawToken
-   = AlexRawToken_INT Int
-   | AlexRawToken_ID String
-   | AlexRawToken_FLOAT Int
+   = AlexRawToken_ID String
+   | AlexRawToken_INT Int
    | AlexRawToken_STR String
+   | AlexRawToken_FLOAT Int
 """
 
 WHITE_SPACE: typing.Final[str] = """
@@ -170,6 +137,31 @@ WHITE_SPACE: typing.Final[str] = """
 -- *             *
 -- ***************
 @WHITE_SPACE = $white+
+"""
+
+IGNORE_WHITE_SPACE: typing.Final[str] = """
+-- ***************************
+-- *                         *
+-- * whitespace ? do nothing *
+-- *                         *
+-- ***************************
+
+@WHITE_SPACE ;
+"""
+
+VALUED_TOKENS: typing.Final[str] = """
+-- ****************************
+-- *                          *
+-- * integers and identifiers *
+-- *                          *
+-- ****************************
+
+@ID    { lex  AlexRawToken_ID                    }
+@INT   { lex (AlexRawToken_INT . round . read)   }
+@STR   { lex AlexRawToken_STR                    }
+@FLOAT { lex (AlexRawToken_FLOAT . round . read) }
+.      { lexicalError                            }
+
 """
 
 TOKENS: typing.Final[str] = """
@@ -227,23 +219,24 @@ class Lexer:
         return None
 
     def _alexify_content(self) -> typing.Optional[str]:
-         
+
+        valued_tokens = ['ID', 'STR', 'INT', 'FLOAT'] 
         data = { entry.name: entry.regex for entry in self.data }
-        upper = lambda kw: kw.upper()
-        namify = lambda kw: f'@KW_{kw.upper()}'
+        upper = lambda name: name.upper()
+        namify = lambda name: f'@KW_{name.upper()}'
+        rulify = lambda name: f'{namify(name)} {{ lex\' AlexRawToken_{upper(name)} }}'
         macros = [f'{namify(name)} = {regex}' for name, regex in data.items()]
-        rules = [f'{namify(name)} {{ lex\' AlexRawToken_{upper(name)} }}' for name in data.keys()]
+        rules = [rulify(name) for name in data.keys() if name not in valued_tokens]
         variants = [f'   | AlexRawToken_{upper(name)}' for name in data.keys()]
 
         output = ""
-        output += "%wrapper \"monadUserState\"\n"
-        output += PARENS
-        output += PUNCTUATION
-        output += KEYWORDS
+        output += "%wrapper \"monadUserState\"\n\n"
         output += '\n'.join(macros) + '\n'
         output += WHITE_SPACE
         output += TOKENS
-        output += '\n'.join(rules) + '\n\n'
+        output += '\n'.join(rules) + '\n'
+        output += IGNORE_WHITE_SPACE
+        output += VALUED_TOKENS
         output += '{\n'
         output += ALEX_TOKEN_TAG
         output += ALEX_RAW_TOKEN
@@ -283,14 +276,6 @@ class Lexer:
 
         logging.info(f'json has correct schema 😊')
         return Lexer(data=[NameRegex(name=entry['name'], regex=entry['regex']) for entry in data[keywords]])
-
-def generate_tokens_block(keywords: list[str]) -> str:
-    lines = ["tokens :-"]
-    for kw in keywords:
-        token = "KW_" + kw.upper()
-        lines.append(f'  "{kw}" {{ \\s -> Token {token} }}')
-    lines.append('  . { \\_ -> error "Unknown token" }')
-    return "\n".join(lines)
 
 def main() -> None:
     if args := Argparse.run():
