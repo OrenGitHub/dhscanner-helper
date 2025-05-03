@@ -71,26 +71,36 @@ class Argparse:
         args = parser.parse_args()
 
         logging.info('received required args 😊')
-
         if os.path.isfile(args.content):
 
             logging.info('json content file exists 😊')
-
             if os.path.isfile(args.haskell_filename):
+                logging.info('haskell file exists 😊')
                 return Argparse(
                     content=pathlib.Path(args.content),
                     haskell_filename=pathlib.Path(args.haskell_filename),
                     alex_output_filename=args.alex_output_filename
                 )
+            else:
+                logging.info('haskell file does not exist 😬')
         else:
             logging.info('json content file does not exist 😬')
+
         return None
 
-def extract_prologue_part(haskell_filename: pathlib.Path) -> typing.Optional[str]:
-    return ""
+def extract_parts(haskell_filename: pathlib.Path) -> typing.Optional[tuple[str, str]]:
 
-def extract_epilogue_part(haskell_filename: pathlib.Path) -> typing.Optional[str]:
-    return ""
+    if not haskell_filename.is_file():
+        return None
+
+    with haskell_filename.open() as fl:
+        content = fl.read()
+
+    parts = content.split("-- SEPARATOR", 1)
+    if len(parts) != 2:
+        return None
+
+    return (parts[0].rstrip() + "\n", parts[1].lstrip())
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class AlexFile:
@@ -116,40 +126,48 @@ class Lexer:
     keywords: list[str]
 
     def build(self, haskell_filename: pathlib.Path) -> typing.Optional[AlexFile]:
-        if haskell_prologue := extract_prologue_part(haskell_filename):
-            if haskell_epilogue := extract_epilogue_part(haskell_filename):
-                if content := self.alexify_content():
-                    return AlexFile(
-                        haskell_prologue=haskell_prologue,
-                        haskell_epilogue=haskell_epilogue,
-                        content=content
-                    )
+
+        parts = extract_parts(haskell_filename)
+        if parts is None:
+            return None
+        
+        if content := self._alexify_content():
+            return AlexFile(
+                haskell_prologue=parts[0],
+                haskell_epilogue=parts[1],
+                content=content
+            )
+
         return None
 
+    def _alexify_content(self) -> str:
+        return ""
+
     @staticmethod
-    def from_json(path: str) -> typing.Optional[Lexer]:
+    def from_json(filename: pathlib.Path) -> typing.Optional[Lexer]:
         try:
-            with open(path) as f:
-                data = json.load(f)
-        except json.JSONDecodeError as e:
-            logging.error(f"JSON decode error in {path}: {e}")
+            with filename.open() as fl:
+                data = json.load(fl)
+        except OSError:
+            logging.error(f"Fatal error reading {filename}")
             return None
-        except OSError as e:
-            logging.error(f"File error when opening {path}: {e}")
-            return None
-
-        if "keywords" not in data:
-            logging.error(f"Missing 'keywords' field in {path}")
-            return None
-        if not isinstance(data["keywords"], list):
-            logging.error(f"'keywords' must be a list in {path}")
-            return None
-        if not all(isinstance(k, str) for k in data["keywords"]):
-            logging.error(f"All items in 'keywords' must be strings in {path}")
+        except json.JSONDecodeError:
+            logging.error(f"Invalid json file: {filename}")
             return None
 
-        logging.info(f"Successfully loaded lexer spec from {path}")
-        return Lexer(keywords=data["keywords"])
+        keyowrds = 'keywords'
+        if keyowrds not in data:
+            logging.error(f'Invalid schema: {filename} ( missing: {keyowrds} )')
+            return None
+        if not isinstance(data[keyowrds], list):
+            logging.error(f'Invalid json schema: {filename} ({keyowrds} is not a list ) ')
+            return None
+        if not all(isinstance(k, str) for k in data[keyowrds]):
+            logging.error(f'Invalid json schema: {filename} (not all {keyowrds} are strings ) ')
+            return None
+
+        logging.info(f'json has correct schema 😊')
+        return Lexer(keywords=data[keyowrds])
 
 def generate_tokens_block(keywords: list[str]) -> str:
     lines = ["tokens :-"]
