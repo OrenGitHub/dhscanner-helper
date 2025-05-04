@@ -11,6 +11,11 @@ import Location
 
 -- SEPARATOR
 
+data AlexUserState = AlexUserState { filepath :: FilePath } deriving ( Show )
+
+alexInitUserState :: AlexUserState
+alexInitUserState = AlexUserState "<unknown>"
+
 setFilePath :: FilePath -> Alex ()
 setFilePath fp = alexSetUserState (AlexUserState { filepath = fp })
 

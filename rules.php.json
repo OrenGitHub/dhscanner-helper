@@ -1,0 +1,5080 @@
+[
+    {
+      "LHS": {
+        "variable": "stmt_cont"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Continue'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'null'"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtContinue (Ast.StmtContinueContent $2)"
+    },
+    {
+      "LHS": {
+        "variable": "case"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Case'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'cond'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ornull"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Nothing"
+    },
+    {
+      "LHS": {
+        "variable": "numbered_case"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "case"
+          },
+          {
+            "variable": "Nothing"
+          },
+          {
+            "variable": "cases"
+          },
+          {
+            "token": "'array'"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "listof"
+          },
+          {
+            "variable": "numbered_case"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "variable": "Nothing"
+          },
+          {
+            "variable": "stmt_switch"
+          },
+          {
+            "variable": "stmt_switch"
+          },
+          {
+            "token": "'Stmt_Switch'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'cond'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "cases"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtExp $6"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_break"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Break'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'null'"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtBreak (Ast.StmtBreakContent $2)"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_nop"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Nop'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtBreak (Ast.StmtBreakContent $2)"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_global"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Global'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exps"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtBreak (Ast.StmtBreakContent $2)"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_trycatch"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_TryCatch'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'null'"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtIf $ Ast.StmtIfContent\n    {\n        Ast.stmtIfCond = Ast.ExpInt $ Ast.ExpIntContent $ Token.ConstInt\n        {\n            Token.constIntValue = 1,\n            Token.constIntLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_while"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_While'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'cond'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtWhile $ Ast.StmtWhileContent\n    {\n        Ast.stmtWhileCond = $6,\n        Ast.stmtWhileBody = $9,\n        Ast.stmtWhileLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_do"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Do'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "'cond'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtWhile $ Ast.StmtWhileContent\n    {\n        Ast.stmtWhileCond = $9,\n        Ast.stmtWhileBody = $6,\n        Ast.stmtWhileLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "catch_type_1"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Name'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Nothing"
+    },
+    {
+      "LHS": {
+        "variable": "catch_type_2"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Name_FullyQualified'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Nothing"
+    },
+    {
+      "LHS": {
+        "variable": "catch_type"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "catch_type_1"
+            }
+          ],
+          [
+            {
+              "variable": "catch_type_2"
+            },
+            {
+              "variable": "numbered_catch_type"
+            },
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "catch_type"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "catch_types"
+            },
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "listof"
+            },
+            {
+              "variable": "numbered_catch_type"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "stmt_catch"
+            },
+            {
+              "variable": "stmt_catch"
+            },
+            {
+              "token": "'Stmt_Catch'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "catch_types"
+            },
+            {
+              "token": "'var'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "'stmts'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "stmts"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.StmtWhile $ Ast.StmtWhileContent\n    {\n        Ast.stmtWhileCond = $9,\n        Ast.stmtWhileBody = $12,\n        Ast.stmtWhileLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "static_vardec"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'StaticVar'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'var'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "var"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ornull"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtAssign $ Ast.StmtAssignContent\n    {\n        Ast.stmtAssignLhs = $6,\n        Ast.stmtAssignRhs = case $9 of {\n            Nothing -> Ast.ExpInt $ Ast.ExpIntContent $ Token.ConstInt 0 $2;\n            Just exp -> exp"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_static_single"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "static_vardec"
+          },
+          {
+            "variable": "numbered_stmt_static"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmt_static_single"
+          },
+          {
+            "variable": "stmt_static"
+          },
+          {
+            "variable": "stmt_static"
+          },
+          {
+            "token": "'Stmt_Static'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'array'"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "listof"
+          },
+          {
+            "variable": "numbered_stmt_static"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtWhile $ Ast.StmtWhileContent\n    {\n        Ast.stmtWhileCond = Ast.ExpInt $ Ast.ExpIntContent $ Token.ConstInt\n        {\n            Token.constIntValue = 1,\n            Token.constIntLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_namespace"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Namespace'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'Name'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtIf $ Ast.StmtIfContent\n    {\n        Ast.stmtIfCond = Ast.ExpBool $ Ast.ExpBoolContent $ Token.ConstBool True $2,\n        Ast.stmtIfBody = $15,\n        Ast.stmtElseBody = [],\n        Ast.stmtIfLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_traituse"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_TraitUse'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "possibly_empty_arrayof"
+          },
+          {
+            "variable": "numbered_exp"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "possibly_empty_arrayof"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "case $6 of {\n        [] -> Ast.StmtContinue $ Ast.StmtContinueContent $2;\n        (head:_) -> Ast.StmtExp head"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_trait"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Trait'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "possibly_empty_arrayof"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "type"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtClass $ Ast.StmtClassContent\n    {\n        Ast.stmtClassName = Token.ClassName $9,\n        Ast.stmtClassSupers = [],\n        Ast.stmtClassDataMembers = Ast.DataMembers Data.Map.empty,\n        Ast.stmtClassMethods = Ast.Methods $ Data.Map.fromList $ methodify (Token.ClassName $9) $12"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_class_const"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_ClassConst'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "possibly_empty_arrayof"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "'type'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "type"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtIf $ Ast.StmtIfContent\n    {\n        Ast.stmtIfCond = Ast.ExpBool $ Ast.ExpBoolContent $ Token.ConstBool True $2,\n        Ast.stmtIfBody = $15,\n        Ast.stmtElseBody = [],\n        Ast.stmtIfLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_dec_const"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Const'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "identifier"
+          },
+          {
+            "token": "'value'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtAssign $ Ast.StmtAssignContent\n    {\n        Ast.stmtAssignLhs = Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $6,\n        Ast.stmtAssignRhs = $9"
+    },
+    {
+      "LHS": {
+        "variable": "stmt"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "stmt_if"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_use"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_for"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_while"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_do"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_nop"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_foreach"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_exp"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_echo"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_unset"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_trait"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_traituse"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_catch"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_global"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_switch"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_class"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_method"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_data_member"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_interface"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_namespace"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_cont"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_dec_const"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_class_const"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_break"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_static"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_trycatch"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_function"
+            }
+          ],
+          [
+            {
+              "variable": "stmt_return"
+            },
+            {
+              "variable": "importee"
+            },
+            {
+              "variable": "tokenID"
+            }
+          ],
+          [
+            {
+              "variable": "tokenID"
+            },
+            {
+              "token": "'\\\\'"
+            },
+            {
+              "variable": "importee"
+            },
+            {
+              "variable": "name"
+            },
+            {
+              "token": "'Name'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'name'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "importee"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "alias"
+            },
+            {
+              "token": "'alias'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "type"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "use_item"
+            },
+            {
+              "token": "'UseItem'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'type'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "stmt_use_type"
+            },
+            {
+              "token": "'name'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "name"
+            },
+            {
+              "variable": "alias"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "numbered_use_item"
+            },
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "use_item"
+            },
+            {
+              "variable": "use_items"
+            },
+            {
+              "variable": "listof"
+            },
+            {
+              "variable": "numbered_use_item"
+            },
+            {
+              "variable": "head"
+            },
+            {
+              "variable": "stmt_use_type"
+            },
+            {
+              "variable": "tokenID"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "stmt_use"
+            },
+            {
+              "variable": "stmt_use"
+            },
+            {
+              "token": "'Stmt_Use'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'type'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "stmt_use_type"
+            },
+            {
+              "token": "'uses'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "use_items"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.StmtImport $ Ast.StmtImportContent\n    {\n        Ast.stmtImportSource = (Data.List.foldl' (\\x y -> x ++ \".\" ++ y) \"\" $11),\n        Ast.stmtImportFromSource = Just (last $11),\n        Ast.stmtImportAlias = Just (last $11),\n        Ast.stmtImportLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "identifier"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Identifier'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Token.Named\n    {\n        Token.content = $6,\n        Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "dec_var"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "tokenID"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ornull"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Token.Named\n    {\n        Token.content = $11,\n        Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "flag"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "ID"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "variable": "INT"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "flags"
+            },
+            {
+              "variable": "flag"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "variable": "flag"
+            }
+          ],
+          [
+            {
+              "token": "' flags { Nothing }\n\nstmt_data_member:\n'"
+            },
+            {
+              "variable": "Stmt_Property"
+            },
+            {
+              "token": "' loc\n'"
+            },
+            {
+              "token": "'\n    ID '"
+            },
+            {
+              "token": "' '"
+            },
+            {
+              "variable": "array"
+            },
+            {
+              "token": "' '"
+            },
+            {
+              "token": "' '"
+            },
+            {
+              "token": "'\n    ID '"
+            },
+            {
+              "token": "' flags\n    '"
+            },
+            {
+              "variable": "type"
+            },
+            {
+              "token": "' '"
+            },
+            {
+              "token": "' type\n    ID '"
+            },
+            {
+              "token": "' '"
+            },
+            {
+              "variable": "array"
+            },
+            {
+              "token": "' '"
+            },
+            {
+              "token": "' INT '"
+            },
+            {
+              "token": "' dec_var '"
+            },
+            {
+              "token": "'\n    optional(hooks)\n'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.StmtVardec $ Ast.StmtVardecContent\n    {\n        Ast.stmtVardecName = Token.VarName $21,\n        Ast.stmtVardecNominalType = Token.NominalTy (Token.Named \"any\" $2),\n        Ast.stmtVardecInitValue = Nothing,\n        Ast.stmtVardecLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "type"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "tokenID"
+            },
+            {
+              "variable": "Token"
+            },
+            {
+              "variable": "Named"
+            },
+            {
+              "variable": "dummyLoc"
+            }
+          ],
+          [
+            {
+              "variable": "identifier"
+            }
+          ],
+          [
+            {
+              "token": "'Name_FullyQualified'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'name'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "tokenID"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "Token"
+            },
+            {
+              "variable": "Named"
+            }
+          ],
+          [
+            {
+              "token": "'Name'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'name'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "Token"
+            },
+            {
+              "variable": "Named"
+            },
+            {
+              "variable": "tokIDValue"
+            },
+            {
+              "variable": "param_default_value"
+            },
+            {
+              "variable": "tokenID"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "variable": "exp"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "hooks"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "param"
+            },
+            {
+              "token": "'Param'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "'type'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "type"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "'var'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "token": "'Expr_Variable'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'name'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "tokenID"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "param_default_value"
+            },
+            {
+              "variable": "optional"
+            },
+            {
+              "variable": "hooks"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.Param\n    {\n        Ast.paramName = Token.ParamName $ Token.Named $28 $24,\n        Ast.paramNominalType = Token.NominalTy $ Token.Named \"any\" $24,\n        Ast.paramNominalTypeV2 = Nothing,\n        paramSerialIdx = 15555"
+    },
+    {
+      "LHS": {
+        "variable": "numbered_param"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "param"
+            },
+            {
+              "variable": "params"
+            },
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "')'"
+            }
+          ],
+          [
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "listof"
+            },
+            {
+              "variable": "numbered_param"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "stmt_method"
+            },
+            {
+              "token": "'Stmt_ClassMethod'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "flags"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "'name'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "identifier"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "params"
+            },
+            {
+              "token": "'returnType'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "tokenID"
+            },
+            {
+              "token": "'stmts'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ornull"
+            },
+            {
+              "variable": "stmts"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.StmtMethod $ Ast.StmtMethodContent\n    {\n        Ast.stmtMethodReturnType = Token.NominalTy (Token.Named \"any\" $2),\n        Ast.stmtMethodName = Token.MethdName $17,\n        Ast.stmtMethodParams = [],\n        Ast.stmtMethodBody = case $26 of { Nothing -> []; Just _stmts -> _stmts"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_interface"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Interface'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'array'"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "identifier"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'array'"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtClass $ Ast.StmtClassContent\n    {\n        Ast.stmtClassName = Token.ClassName $11,\n        Ast.stmtClassSupers = [],\n        Ast.stmtClassDataMembers = Ast.DataMembers Data.Map.empty,\n        Ast.stmtClassMethods = Ast.Methods $ Data.Map.fromList $ methodify (Token.ClassName $11) $19"
+    },
+    {
+      "LHS": {
+        "variable": "implements"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Name'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "variable": "Nothing"
+          },
+          {
+            "variable": "numbered_implements"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "implements"
+          },
+          {
+            "variable": "Nothing"
+          },
+          {
+            "variable": "stmt_class"
+          },
+          {
+            "token": "'Stmt_Class'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'array'"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "identifier"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "type"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "possibly_empty_arrayof"
+          },
+          {
+            "variable": "numbered_implements"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtClass $ Ast.StmtClassContent\n    {\n        Ast.stmtClassName = Token.ClassName $14,\n        Ast.stmtClassSupers = [],\n        Ast.stmtClassDataMembers = Ast.DataMembers Data.Map.empty,\n        Ast.stmtClassMethods = Ast.Methods $ Data.Map.fromList $ methodify (Token.ClassName $14) $23"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_exp"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "token": "'Stmt_Expression'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'expr'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "Ast"
+            },
+            {
+              "variable": "StmtExp"
+            }
+          ],
+          [
+            {
+              "token": "'Stmt_Expression'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'expr'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "assign"
+            },
+            {
+              "token": "')'"
+            }
+          ],
+          [
+            {
+              "variable": "exp"
+            },
+            {
+              "variable": "Ast"
+            },
+            {
+              "variable": "StmtExp"
+            },
+            {
+              "variable": "stmt_else"
+            },
+            {
+              "variable": "stmt_else"
+            },
+            {
+              "token": "'Stmt_Else'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'stmts'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "stmts"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "elseif"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_ElseIf'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'cond'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$9"
+    },
+    {
+      "LHS": {
+        "variable": "numbered_elseif"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "elseif"
+            },
+            {
+              "variable": "elseifs"
+            },
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "')'"
+            }
+          ],
+          [
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "listof"
+            },
+            {
+              "variable": "numbered_elseif"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "stmt_if"
+            },
+            {
+              "variable": "stmt_if"
+            },
+            {
+              "token": "'Stmt_If'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'cond'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "'stmts'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "stmts"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "elseifs"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ornull"
+            },
+            {
+              "variable": "stmt_else"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.StmtIf $ Ast.StmtIfContent\n    {\n        Ast.stmtIfCond = $6,\n        Ast.stmtIfBody = $9,\n        Ast.stmtElseBody = [],\n        Ast.stmtIfLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "var_simple"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Variable'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n    {\n        Token.content = $6,\n        Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "var_field1"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_PropertyFetch'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'var'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "identifier"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.VarField $ Ast.VarFieldContent\n    {\n        Ast.varFieldLhs = $6,\n        Ast.varFieldName = Token.FieldName $9,\n        Ast.varFieldLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "var_field2"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_StaticPropertyFetch'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.VarField $ Ast.VarFieldContent\n    {\n        Ast.varFieldLhs = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n        {\n            Token.content = $11,\n            Token.location = $7"
+    },
+    {
+      "LHS": {
+        "variable": "var_field3"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_PropertyFetch'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'var'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.VarField $ Ast.VarFieldContent\n    {\n        Ast.varFieldLhs = $6,\n        Ast.varFieldName = Token.FieldName (Token.Named \"popo\" $2),\n        Ast.varFieldLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "var_field4"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_ClassConstFetch'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "identifier"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.VarField $ Ast.VarFieldContent\n    {\n        Ast.varFieldLhs = $6,\n        Ast.varFieldName = Token.FieldName $9,\n        Ast.varFieldLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "var_field"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "var_field1"
+            }
+          ],
+          [
+            {
+              "variable": "var_field2"
+            }
+          ],
+          [
+            {
+              "variable": "var_field3"
+            }
+          ],
+          [
+            {
+              "variable": "var_field4"
+            },
+            {
+              "variable": "var_subscript"
+            },
+            {
+              "variable": "var_subscript"
+            },
+            {
+              "token": "'Expr_ArrayDimFetch'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'var'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ornull"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.VarSubscript $ Ast.VarSubscriptContent\n    {\n        Ast.varSubscriptLhs = $6,\n        Ast.varSubscriptIdx = $6,\n        Ast.varSubscriptLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "var"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "var_simple"
+            }
+          ],
+          [
+            {
+              "variable": "var_list"
+            }
+          ],
+          [
+            {
+              "variable": "var_field"
+            }
+          ],
+          [
+            {
+              "variable": "var_subscript"
+            },
+            {
+              "variable": "assign_op"
+            },
+            {
+              "token": "'Expr_Assign'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_AssignOp_Div'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_AssignOp_Plus'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_AssignOp_Minus'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_AssignOp_Concat'"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "stmt_echo"
+            },
+            {
+              "variable": "stmt_echo"
+            },
+            {
+              "token": "'Stmt_Echo'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'exprs'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exps"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.StmtExp $ Ast.ExpCall $ Ast.ExpCallContent\n    {\n        Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n        {\n            Token.content = \"echo\",\n            Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_unset"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Unset'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exps"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtExp $ Ast.ExpCall $ Ast.ExpCallContent\n    {\n        Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n        {\n            Token.content = \"unset\",\n            Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_or_null"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "token": "'null'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "variable": "exp"
+            },
+            {
+              "variable": "Just"
+            },
+            {
+              "variable": "stmt_return"
+            },
+            {
+              "variable": "stmt_return"
+            },
+            {
+              "token": "'Stmt_Return'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'expr'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp_or_null"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.StmtReturn $ Ast.StmtReturnContent\n    {\n        Ast.stmtReturnValue = $6,\n        Ast.stmtReturnLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exps"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "numbered_exps"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "numbered_exps"
+            },
+            {
+              "variable": "numbered_exps"
+            },
+            {
+              "variable": "numbered_exp"
+            },
+            {
+              "variable": "numbered_exps"
+            }
+          ],
+          [
+            {
+              "variable": "numbered_exp"
+            },
+            {
+              "variable": "numbered_exp"
+            },
+            {
+              "variable": "numbered_exp"
+            },
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "variable": "exp_not"
+            },
+            {
+              "variable": "exp_not"
+            },
+            {
+              "token": "'Expr_BooleanNot'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'expr'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_exit"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Exit'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ornull"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpCall $ Ast.ExpCallContent\n    {\n        Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n        {\n            Token.content = \"exit\",\n            Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_isset"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Isset'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exps"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpCall $ Ast.ExpCallContent\n    {\n        Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n        {\n            Token.content = \"isset\",\n            Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_ternary"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Ternary'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'cond'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ornull"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_cast1"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Cast_Double'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_cast2"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Cast_Int'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_cast3"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Cast_String'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_cast4"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Cast_Bool'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_cast5"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Cast_Object'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_cast"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "exp_cast1"
+            }
+          ],
+          [
+            {
+              "variable": "exp_cast2"
+            }
+          ],
+          [
+            {
+              "variable": "exp_cast3"
+            }
+          ],
+          [
+            {
+              "variable": "exp_cast4"
+            }
+          ],
+          [
+            {
+              "variable": "exp_cast5"
+            },
+            {
+              "variable": "exp_empty"
+            },
+            {
+              "variable": "exp_empty"
+            },
+            {
+              "token": "'Expr_Empty'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'expr'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "interpolated_string_part"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "exp"
+          },
+          {
+            "variable": "numbered_interpolated_string_part"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "interpolated_string_part"
+          },
+          {
+            "variable": "interpolated_string_parts"
+          },
+          {
+            "token": "'array'"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "listof"
+          },
+          {
+            "variable": "numbered_interpolated_string_part"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "variable": "exp_fstring"
+          },
+          {
+            "variable": "exp_fstring"
+          },
+          {
+            "token": "'Scalar_InterpolatedString'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "interpolated_string_parts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpCall $ Ast.ExpCallContent\n    {\n        Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n        {\n            Token.content = \"fstring\",\n            Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "unop_operator"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "token": "'Expr_UnaryMinus'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_PostInc'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_PostDec'"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "exp_unop"
+            },
+            {
+              "variable": "exp_unop1"
+            },
+            {
+              "variable": "unop_operator"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'var'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_unop2"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "unop_operator"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_unop"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "exp_unop1"
+            }
+          ],
+          [
+            {
+              "variable": "exp_unop2"
+            },
+            {
+              "variable": "import_type"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "exp_import"
+            },
+            {
+              "variable": "exp_import"
+            },
+            {
+              "token": "'Expr_Include'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'expr'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "'type'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "import_type"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_file"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Scalar_MagicConst_File'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n    {\n        Token.content = \"__FILE__\",\n        Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_dir"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Scalar_MagicConst_Dir'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n    {\n        Token.content = \"__DIR__\",\n        Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_instof"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Instanceof'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'Name'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "err_suppress"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_ErrorSuppress'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "assign"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "assign_op"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'var'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "var"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtAssign $ Ast.StmtAssignContent\n    {\n        Ast.stmtAssignLhs = $6,\n        Ast.stmtAssignRhs = $9"
+    },
+    {
+      "LHS": {
+        "variable": "exp_print"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Print'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_throw"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_Throw'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "$6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_kwclass"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Scalar_MagicConst_Class'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n    {\n        Token.content = \"class\",\n        Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_null_safe_prop_fetch"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_NullsafePropertyFetch'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'var'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "var"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "identifier"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarField $ Ast.VarFieldContent\n    {\n        Ast.varFieldLhs = Ast.ExpVar (Ast.ExpVarContent $6),\n        Ast.varFieldName = Token.FieldName $9,\n        Ast.varFieldLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "exp_int"
+            }
+          ],
+          [
+            {
+              "variable": "exp_float"
+            }
+          ],
+          [
+            {
+              "variable": "exp_str"
+            }
+          ],
+          [
+            {
+              "variable": "exp_new"
+            }
+          ],
+          [
+            {
+              "variable": "exp_not"
+            }
+          ],
+          [
+            {
+              "variable": "exp_bool"
+            }
+          ],
+          [
+            {
+              "variable": "exp_exit"
+            }
+          ],
+          [
+            {
+              "variable": "exp_cast"
+            }
+          ],
+          [
+            {
+              "variable": "exp_call"
+            },
+            {
+              "variable": "Ast"
+            },
+            {
+              "variable": "ExpCall"
+            }
+          ],
+          [
+            {
+              "variable": "exp_binop"
+            }
+          ],
+          [
+            {
+              "variable": "exp_print"
+            }
+          ],
+          [
+            {
+              "variable": "exp_throw"
+            }
+          ],
+          [
+            {
+              "variable": "exp_dir"
+            }
+          ],
+          [
+            {
+              "variable": "exp_file"
+            }
+          ],
+          [
+            {
+              "variable": "exp_unop"
+            }
+          ],
+          [
+            {
+              "variable": "exp_isset"
+            }
+          ],
+          [
+            {
+              "variable": "exp_empty"
+            }
+          ],
+          [
+            {
+              "variable": "exp_null_safe_prop_fetch"
+            }
+          ],
+          [
+            {
+              "variable": "exp_array"
+            }
+          ],
+          [
+            {
+              "variable": "exp_import"
+            }
+          ],
+          [
+            {
+              "variable": "err_suppress"
+            }
+          ],
+          [
+            {
+              "variable": "exp_lambda"
+            }
+          ],
+          [
+            {
+              "variable": "exp_ternary"
+            }
+          ],
+          [
+            {
+              "variable": "exp_fstring"
+            }
+          ],
+          [
+            {
+              "variable": "exp_instof"
+            }
+          ],
+          [
+            {
+              "variable": "exp_var"
+            }
+          ],
+          [
+            {
+              "variable": "exp_kwclass"
+            },
+            {
+              "variable": "array_item"
+            },
+            {
+              "token": "'ArrayItem'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ornull"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "'value'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "$9"
+    },
+    {
+      "LHS": {
+        "variable": "numbered_array_item"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "array_item"
+            },
+            {
+              "variable": "array_items"
+            },
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "')'"
+            }
+          ],
+          [
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "listof"
+            },
+            {
+              "variable": "numbered_array_item"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "exp_array"
+            },
+            {
+              "variable": "exp_array"
+            },
+            {
+              "token": "'Expr_Array'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "array_items"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.ExpCall $ Ast.ExpCallContent\n    { \n        Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n        {\n            Token.content = \"arrayify\",\n            Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "var_list"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_List'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "array_items"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.VarField $ Ast.VarFieldContent\n    {\n        Ast.varFieldLhs = Ast.ExpCall $ Ast.ExpCallContent\n        { \n            Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarSimple $ Ast.VarSimpleContent $ Token.VarName $ Token.Named\n            {\n                Token.content = \"arrayify\",\n                Token.location = $2"
+    },
+    {
+      "LHS": {
+        "variable": "closure_use"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'ClosureUse'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'var'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "var"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Nothing"
+    },
+    {
+      "LHS": {
+        "variable": "numbered_closure_use"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "closure_use"
+          },
+          {
+            "variable": "Nothing"
+          },
+          {
+            "variable": "exp_lambda"
+          },
+          {
+            "variable": "exp_lambda"
+          },
+          {
+            "token": "'Expr_Closure'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'array'"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "params"
+          },
+          {
+            "token": "'uses'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'array'"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "optional"
+          },
+          {
+            "variable": "listof"
+          },
+          {
+            "variable": "numbered_closure_use"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "'returnType'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpLambda $ Ast.ExpLambdaContent\n    {\n        Ast.expLambdaParams = $17,\n        Ast.expLambdaBody = $29,\n        Ast.expLambdaLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_int"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Scalar_Int'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'value'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpInt $ Ast.ExpIntContent $ Token.ConstInt\n    {\n        Token.constIntValue = tokIntValue $6,\n        Token.constIntLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "float_value"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "FLOAT"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "variable": "INT"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "exp_float"
+            },
+            {
+              "variable": "exp_float"
+            },
+            {
+              "token": "'Scalar_Float'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'value'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "float_value"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.ExpInt $ Ast.ExpIntContent $ Token.ConstInt\n    {\n        Token.constIntValue = 4444,\n        Token.constIntLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_str"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "STR"
+          }
+        ]
+      },
+      "action": "Ast.ExpStr $ Ast.ExpStrContent $ Token.ConstStr\n    {\n        Token.constStrValue = case (tokStrValue $1) of { Nothing -> \"LLL\"; Just (s,_) -> s"
+    },
+    {
+      "LHS": {
+        "variable": "exp_bool"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_ConstFetch'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'Name'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpBool $ Ast.ExpBoolContent $ Token.ConstBool\n    {\n        Token.constBoolValue = True,\n        Token.constBoolLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_var"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "var"
+            },
+            {
+              "variable": "Ast"
+            },
+            {
+              "variable": "ExpVar"
+            },
+            {
+              "variable": "Ast"
+            },
+            {
+              "variable": "ExpVarContent"
+            },
+            {
+              "variable": "operator"
+            },
+            {
+              "token": "'Expr_BinaryOp_Smaller'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_SmallerOrEqual'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Equal'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_NotEqual'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Mul'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Div'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Plus'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Minus'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Greater'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_GreaterOrEqual'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Coalesce'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Concat'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_Identical'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_NotIdentical'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_LogicalAnd'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_BooleanOr'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_BitwiseOr'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_LogicalOr'"
+            },
+            {
+              "variable": "Nothing"
+            }
+          ],
+          [
+            {
+              "token": "'Expr_BinaryOp_BooleanAnd'"
+            },
+            {
+              "variable": "Nothing"
+            },
+            {
+              "variable": "exp_binop"
+            },
+            {
+              "variable": "exp_binop_1"
+            },
+            {
+              "variable": "operator"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'left'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "'right'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.ExpBinop $ Ast.ExpBinopContent\n    {\n        Ast.expBinopLeft = $6,\n        Ast.expBinopRight = $9,\n        Ast.expBinopOperator = Ast.PLUS,\n        Ast.expBinopLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_binop_2"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "variable": "operator"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'left'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'right'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "assign"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpBinop $ Ast.ExpBinopContent\n    {\n        Ast.expBinopLeft = $6,\n        Ast.expBinopRight = case $9 of { (Ast.StmtAssign a) -> Ast.stmtAssignRhs a; _ -> $6"
+    },
+    {
+      "LHS": {
+        "variable": "exp_binop"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "exp_binop_1"
+            }
+          ],
+          [
+            {
+              "variable": "exp_binop_2"
+            },
+            {
+              "variable": "exp_new"
+            },
+            {
+              "variable": "exp_new"
+            },
+            {
+              "token": "'Expr_New'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "'args'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "args"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.ExpCall $ Ast.ExpCallContent\n    {\n        Ast.callee = $6,\n        Ast.args = $9,\n        Ast.expCallLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_call"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "exp_func_call"
+            }
+          ],
+          [
+            {
+              "variable": "exp_method_call"
+            }
+          ],
+          [
+            {
+              "variable": "exp_static_method_call"
+            },
+            {
+              "variable": "exp_func_call"
+            },
+            {
+              "variable": "exp_func_call"
+            },
+            {
+              "token": "'Expr_FuncCall'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'name'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "token": "'args'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "args"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.ExpCallContent\n    {\n        Ast.callee = $6,\n        Ast.args = $9,\n        Ast.expCallLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "exp_method_call"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_MethodCall'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'var'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "token": "'Identifier'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "tokenID"
+          },
+          {
+            "token": "')'"
+          },
+          {
+            "token": "'args'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "args"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpCallContent\n    {\n        Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarField $ Ast.VarFieldContent\n        {\n            Ast.varFieldLhs = $6,\n            Ast.varFieldName = Token.FieldName $ Token.Named { Token.content = $14, Token.location = $10"
+    },
+    {
+      "LHS": {
+        "variable": "exp_static_method_call"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Expr_StaticCall'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'name'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "identifier"
+          },
+          {
+            "token": "'args'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "args"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.ExpCallContent\n    {\n        Ast.callee = Ast.ExpVar $ Ast.ExpVarContent $ Ast.VarField $ Ast.VarFieldContent\n        {\n            Ast.varFieldLhs = $6,\n            Ast.varFieldName = Token.FieldName $9,\n            Ast.varFieldLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "args"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "')'"
+            }
+          ],
+          [
+            {
+              "token": "'array'"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "variable": "listof"
+            },
+            {
+              "variable": "numbered_arg"
+            },
+            {
+              "token": "')'"
+            },
+            {
+              "variable": "numbered_arg"
+            },
+            {
+              "variable": "numbered_arg"
+            },
+            {
+              "variable": "INT"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "arg"
+            },
+            {
+              "variable": "arg"
+            },
+            {
+              "variable": "arg"
+            },
+            {
+              "token": "'Arg'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'name'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "tokenID"
+            },
+            {
+              "token": "'value'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exp"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "ID"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "$9"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_for_loop"
+      },
+      "derived": {
+        "choice": [
+          [
+            {
+              "variable": "exp"
+            }
+          ],
+          [
+            {
+              "variable": "exps"
+            },
+            {
+              "variable": "head"
+            },
+            {
+              "variable": "stmt_for"
+            },
+            {
+              "variable": "stmt_for"
+            },
+            {
+              "token": "'Stmt_For'"
+            },
+            {
+              "variable": "loc"
+            },
+            {
+              "token": "'('"
+            },
+            {
+              "token": "'init'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "stmts"
+            },
+            {
+              "token": "'cond'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "exps"
+            },
+            {
+              "token": "'loop'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "stmt_for_loop"
+            },
+            {
+              "token": "'stmts'"
+            },
+            {
+              "token": "':'"
+            },
+            {
+              "variable": "stmts"
+            },
+            {
+              "token": "')'"
+            }
+          ]
+        ]
+      },
+      "action": "Ast.StmtWhile $ Ast.StmtWhileContent\n    {\n        Ast.stmtWhileCond = $12,\n        Ast.stmtWhileBody = $15,\n        Ast.stmtWhileLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "stmt_foreach"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'Stmt_Foreach'"
+          },
+          {
+            "variable": "loc"
+          },
+          {
+            "token": "'('"
+          },
+          {
+            "token": "'expr'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ornull"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "variable": "ID"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "exp"
+          },
+          {
+            "token": "'stmts'"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "stmts"
+          },
+          {
+            "token": "')'"
+          }
+        ]
+      },
+      "action": "Ast.StmtWhile $ Ast.StmtWhileContent\n    {\n        Ast.stmtWhileCond = $6,\n        Ast.stmtWhileBody = $18,\n        Ast.stmtWhileLocation = $2"
+    },
+    {
+      "LHS": {
+        "variable": "loc"
+      },
+      "derived": {
+        "sequence": [
+          {
+            "token": "'['"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "'-'"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "':'"
+          },
+          {
+            "variable": "INT"
+          },
+          {
+            "token": "']'"
+          }
+        ]
+      },
+      "action": "Location\n    {\n        Location.filename = getFilename $1,\n        lineStart = fromIntegral (tokIntValue $2),\n        colStart = fromIntegral (tokIntValue $4),\n        lineEnd = fromIntegral (tokIntValue $6),\n        colEnd = fromIntegral (tokIntValue $8)"
+    }
+  ]
