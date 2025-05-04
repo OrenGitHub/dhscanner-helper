@@ -317,8 +317,15 @@ class Derived(abc.ABC):
         ...
 
     @staticmethod
-    def from_dict(candidate: dict) -> Derived:
-        ...
+    def from_dict(candidate: dict) -> typing.Optional[Derived]:
+
+        if sequence := DerivedSequence.from_dict(candidate):
+            return sequence
+
+        if choice := DerivedChoice.from_dict(candidate):
+            return choice
+        
+        return None
 
 @dataclasses.dataclass(frozen=True)
 class VariableOrToken(abc.ABC):
@@ -373,16 +380,6 @@ class Token(VariableOrToken):
 class Action:
 
     action: str
-
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[Action]:
-        if 'action' not in candidate:
-            return None
-        
-        if not isinstance(candidate['action'], str):
-            return None
-        
-        return Action(candidate['action'])
 
 @dataclasses.dataclass(frozen=True)
 class VariableAction:
@@ -448,19 +445,30 @@ class Rule:
     def from_dict(candidate: dict) -> typing.Optional[Rule]:
         
         if 'LHS' not in candidate:
+            logging.error('LHS not found in rule 😬')
             return None
         
         if 'derived' not in candidate:
+            logging.error('derived not found in rule 😬')
             return None
         
         if 'action' not in candidate:
+            logging.error('action not found in rule 😬')
             return None
         
         if lhs := Variable.from_dict(candidate['LHS']):
             if derived := Derived.from_dict(candidate['derived']):
-                if action := Action.from_dict(candidate['action']):
+                action = candidate['action']
+                if isinstance(action, str):
                     return Rule(lhs, derived, action)
-                
+                else:
+                    logging.error('action not found in rule 😬')
+            else:
+                logging.error('derived not found in rule 😬')
+        else:
+            logging.error('LHS not found in rule 😬')
+
+
         return None
 
 @dataclasses.dataclass(frozen=True)
@@ -475,18 +483,24 @@ class Parser:
             with filename.open() as fl:
                 data = json.load(fl)
         except OSError:
-            logging.error(f"Fatal error reading {filename}")
+            logging.error(f"Fatal error reading {filename} 😬")
             return None
         except json.JSONDecodeError:
-            logging.error(f"Invalid json file: {filename}")
+            logging.error(f"Invalid json file: {filename} 😬")
             return None
 
         if not isinstance(data, list):
-            logging.error(f'Invalid json schema: {filename} ( not a list ) ')
+            logging.error(f'Invalid json schema: {filename} ( not a list ) 😬')
             return None
 
         result = [Rule.from_dict(r) for r in data]
-        return result if None not in result else None
+
+        if None not in result:
+            logging.info('loaded json rules succeeded 😊')
+            return result
+        
+        logging.error(f'Invalid json schema: {filename} ( not a list of rules 😬 ) ')
+        return None
 
     def build(self, haskell_filename: pathlib.Path) -> typing.Optional[HappyFile]:
 
@@ -511,7 +525,7 @@ class Parser:
         raw = 'AlexRawToken'
         valued = ['ID', 'STR', 'INT', 'FLOAT'] 
         clean = lambda value: value.replace('\\', '')
-        data = { entry.name: entry.regex for entry in self.data }
+        data = { entry.name: entry.regex for entry in self.tokens }
         tokenify = lambda name, value: f'\'{clean(value)}\' {tag} {raw}_{name} {lbrack} _ {rbrack}'
         macros = [f'{tokenify(name, value)}' for name, value in data.items() if name not in valued]
 
