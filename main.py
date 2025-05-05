@@ -1,19 +1,20 @@
 from __future__ import annotations
 
-import glob
 import os
 import re
 import sys
+import glob
 import json
-import openai
 import typing
 import pathlib
 import logging
+import requests
 import argparse
 import subprocess
 import dataclasses
 
-import requests
+from openai import OpenAI
+
 
 ARGPARSE_PROG_DESC: typing.Final[str] = """
 
@@ -149,7 +150,13 @@ def get_system_prompt_message() -> str:
     return { 'role': 'system', 'content': system_prompt }
 
 def get_user_prompt_message(tokens, rules, ast, parse_status) -> str:
-    pass
+    content = (
+        f'here is the tokens json file:\n\n{tokens}\n\n' +
+        f'here are the rules ( as global variable RULES inside this python file ):\n\n{rules}\n\n' +
+        f'here is the Haskell Ast:\n\n{ast}' +
+        f'here is the parse status:\n\n{parse_status}'
+    )
+    return { "role": "user", "content":  content}
 
 def call_llm(tokens, rules, ast, parse_status) -> str:
 
@@ -161,13 +168,13 @@ def call_llm(tokens, rules, ast, parse_status) -> str:
         get_user_prompt_message(tokens, rules, ast, parse_status)
     ]
 
-    response = openai.ChatCompletion.create(
+    client = OpenAI(api_key=api_key)
+    response = client.chat.completions.create(
         model=MODEL,
-        api_key=api_key,
         messages=messages
     )
 
-    return response['choices'][0]['message']['content']
+    return response.choices[0].message.content
 
 def main(args: Argparse) -> None:
 
@@ -180,11 +187,13 @@ def main(args: Argparse) -> None:
 
         feedback = "this is the first iteration"
 
-        response = call_llm(tokens, rules, ast, parse_status, feedback)
+        response = call_llm(tokens, rules, ast, parse_status)
 
         if response is None:
             logging.error('Invalid OpenAI token')
             return
+
+        print(response)
 
         #rule = Rule.extract(response)
         #if not rule:
@@ -247,7 +256,7 @@ def get_dhscanner_status_for(filename: str, native_ast: str) -> dict:
     response = requests.post(f'{url}?filename={filename}', json=content)
     return { 'filename': filename, 'status': json.loads(response.text) }
 
-def extract_location(message: str) -> typing.Optional[dict]:
+def extract_location(message: str, native_ast: str) -> typing.Optional[dict]:
 
     pattern = (
         r'lineStart = (\d+), '
@@ -263,11 +272,15 @@ def extract_location(message: str) -> typing.Optional[dict]:
 
     if match:
         line_start, line_end, col_start, col_end = match.groups()
+
+        lines = native_ast.split('\n')
+        start = int(line_start)
+        content = lines[start - 1]
+
         return {
-            "lineStart": int(line_start),
-            "lineEnd": int(line_end),
             "colStart": int(col_start),
-            "colEnd": int(col_end)
+            "colEnd": int(col_end),
+            "content": content
         }
 
     return None
@@ -280,7 +293,7 @@ def generate_initial_parse_status(parsing_status_json_filename: str) -> None:
         native_ast = get_native_ast(filename)
         parse_status = get_dhscanner_status_for(filename, native_ast)
         message = parse_status['status']['message']
-        if location := extract_location(message):
+        if location := extract_location(message, native_ast):
             status[filename] = location
 
     with open(parsing_status_json_filename, 'w') as fl:
@@ -316,8 +329,8 @@ if __name__ == "__main__":
     if args := Argparse.run():
 
         #if launch_services_successfully('compose.parsers.yaml'):
-        generate_initial_parse_status(args.parsing_status_json_filename)
-        #main(args)
+        #generate_initial_parse_status(args.parsing_status_json_filename)
+        main(args)
         
         # Arrrggghhhh ...
         #logging.error('Failed to launch parsing dockers')
