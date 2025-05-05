@@ -10,13 +10,6 @@ import logging
 import argparse
 import dataclasses
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="[%(asctime)s] [%(levelname)s]: %(message)s",
-    datefmt="%d/%m/%Y ( %H:%M:%S )",
-    stream=sys.stdout
-)
-
 ARGPARSE_PROG_DESC: typing.Final[str] = """
 Generate Lexer.x from lexer.json and Lexer.in.hs
 """
@@ -29,12 +22,18 @@ ARGPARSE_HASKELL_IN_FILENAME_HELP: typing.Final[str] = """
 Path to output Lexer.in.hs file
 """
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(asctime)s] [%(levelname)s]: %(message)s",
+    datefmt="%d/%m/%Y ( %H:%M:%S )",
+    stream=sys.stdout
+)
+
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class Argparse:
 
     tokens_json_filename: pathlib.Path
     lexer_haskell_filename: pathlib.Path
-    rules_json_filename: pathlib.Path
     parser_haskell_filename: pathlib.Path
     alex_output_filename: str
     happy_output_filename: str
@@ -62,14 +61,6 @@ class Argparse:
             type=str,
             metavar="<Lexer>.in.hs",
             help=ARGPARSE_HASKELL_IN_FILENAME_HELP
-        )
-
-        parser.add_argument(
-            '--rules_json',
-            required=True,
-            type=str,
-            metavar="<rules>.json",
-            help=ARGPARSE_CONTENT_HELP
         )
 
         parser.add_argument(
@@ -109,10 +100,6 @@ class Argparse:
             logging.info('lexer haskell file does not exist 😬')
             return None
 
-        logging.info('lexer haskell file exists 😊')
-        if not os.path.isfile(args.rules_json):
-            logging.info('rules json file does not exist 😬')
-
         logging.info('rules json file exists 😊')
         if not os.path.isfile(args.parser_haskell):
             logging.info('parser haskell file does not exist 😬')
@@ -123,7 +110,6 @@ class Argparse:
         return Argparse(
             tokens_json_filename=pathlib.Path(args.tokens_json),
             lexer_haskell_filename=pathlib.Path(args.lexer_haskell),
-            rules_json_filename=pathlib.Path(args.rules_json),
             parser_haskell_filename=pathlib.Path(args.parser_haskell),
             alex_output_filename=args.alex_output_filename,
             happy_output_filename=args.happy_output_filename
