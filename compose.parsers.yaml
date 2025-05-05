@@ -1,0 +1,13 @@
+services:
+    frontphp:
+        build:
+            context: native_php_parser
+            dockerfile: Dockerfile
+        ports:
+            - 443:443
+    parser:
+        build:
+            context: dhscanner_ast_parser
+            dockerfile: Dockerfile
+        ports:
+            - 443:443

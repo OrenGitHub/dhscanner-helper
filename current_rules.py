@@ -268,6 +268,27 @@ GRAMMAR_START: typing.Final[str] = """
 %%
 """
 
+PARAMETRIZED_RULES: typing.Final[str] = """
+-- **********************
+-- *                    *
+-- * parametrized rules *
+-- *                    *
+-- **********************
+
+optional(a): { Nothing } | a { Just $1 }
+listof(a): a { [$1] } | a listof(a) { $1:$2 }
+ornull(a): 'null' { Nothing } | a { Just $1 }
+possibly_empty_arrayof(a): 'array' '(' ')' { [] } | 'array' '(' listof(a) ')' { $3 }
+"""
+
+PROGRAM_STARTS: typing.Final[str] = """
+-- ***********
+-- *         *
+-- * program *
+-- *         *
+-- ***********
+"""
+
 def from_tokens_json(filename: pathlib.Path) -> typing.Optional[list[NameRegex]]:
     try:
         with filename.open() as fl:
@@ -302,342 +323,11 @@ def from_tokens_json(filename: pathlib.Path) -> typing.Optional[list[NameRegex]]
     logging.info('json has correct schema 😊')
     return [NameRegex(name=entry['name'], regex=entry['regex']) for entry in data[keywords]]
 
-
-@dataclasses.dataclass(frozen=True)
-class HappyFile:
-
-    haskell_prologue: str
-    haskell_epilogue: str
-    content: str
-
-    def __str__(self) -> str:
-        return (
-            '{\n' + self.haskell_prologue + '\n}\n\n' +
-            self.content + '\n\n' +
-            self.haskell_epilogue + '}\n'
-        )
-
-    def store(self, filename: str) -> None:
-        with open(filename, 'w', encoding='utf-8') as fl:
-            fl.write(str(self))
-
-@dataclasses.dataclass(frozen=True)
-class Derived(abc.ABC):
-
-    @abc.abstractmethod
-    def __init__(self) -> None:
-        ...
-
-    @abc.abstractmethod
-    def __str__(self) -> str:
-        ...
-
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[Derived]:
-
-        if sequence := DerivedSequence.from_dict(candidate):
-            return sequence
-
-        if choice := DerivedChoice.from_dict(candidate):
-            return choice
-
-        return None
-
-@dataclasses.dataclass(frozen=True)
-class VariableOrToken(abc.ABC):
-
-    @abc.abstractmethod
-    def __init__(self):
-        ...
-
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[VariableOrToken]:
-
-        if variable := Variable.from_dict(candidate):
-            return variable
-
-        if token := Token.from_dict(candidate):
-            return token
-
-        return None
-
-@dataclasses.dataclass(frozen=True)
-class Variable(VariableOrToken):
-
-    variable: str
-
-    def __str__(self) -> str:
-        return self.variable
-
-    @typing.override
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[VariableOrToken]:
-        if 'variable' not in candidate:
-            return None
-
-        if not isinstance(candidate['variable'], str):
-            return None
-
-        return Variable(candidate['variable'])
-
-@dataclasses.dataclass(frozen=True)
-class Token(VariableOrToken):
-
-    token: str
-
-    def __str__(self) -> str:
-        return self.token
-
-    @typing.override
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[VariableOrToken]:
-        if 'token' not in candidate:
-            return None
-
-        if not isinstance(candidate['token'], str):
-            return None
-
-        return Token(candidate['token'])
-
-@dataclasses.dataclass(frozen=True)
-class Parametrized:
-
-    kind: str
-    variable: Variable
-
-    def __str__(self) -> str:
-        return f'{self.kind}({self.variable})'
-
-    @typing.override
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[Parametrized]:
-        if 'token' not in candidate:
-            return None
-
-        if not isinstance(candidate['token'], str):
-            return None
-
-        return Parametrized(candidate['token'])
-
-@dataclasses.dataclass(frozen=True)
-class Action:
-
-    action: str
-
-    def __str__(self) -> str:
-        return self.action
-
-@dataclasses.dataclass(frozen=True)
-class VariableAction:
-
-    variable: Lhs
-    # action: Action
-
-    def __str__(self) -> str:
-        lbrack = '{'
-        rbrack = '}'
-        return f'{self.variable}: {lbrack} {self.action} {rbrack}'
-
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[VariableAction]:
-
-        if 'variable' not in candidate:
-            return None
-
-        #if 'action' not in candidate:
-        #    return None
-
-        v = Lhs(candidate['variable'])
-        # action = Action(candidate['action'])
-        return VariableAction(v)
-
-@dataclasses.dataclass(frozen=True)
-class DerivedSequence(Derived):
-
-    sequence: list[VariableOrToken]
-
-    @typing.override
-    def __str__(self) -> str:
-        return '\n'.join([str(element) for element in self.sequence])
-
-    @typing.override
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[Derived]:
-
-        if 'sequence' not in candidate:
-            return None
-
-        num_invalid_elements = 0
-        sequence = candidate['sequence']
-        result: list[VariableOrToken] = []
-        for element in sequence:
-            if v := VariableOrToken.from_dict(element):
-                result.append(v)
-            else:
-                num_invalid_elements += 1
-
-        return DerivedSequence(result) if num_invalid_elements == 0 else None
-
-@dataclasses.dataclass(frozen=True)
-class DerivedChoice(Derived):
-
-    choice: list[VariableAction]
-
-    @typing.override
-    def __str__(self) -> str:
-        return '|\n'.join([str(element) for element in self.choice])
-
-    @typing.override
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[Derived]:
-
-        if 'choice' not in candidate:
-            return None
-
-        num_invalid_elements = 0
-        choice = candidate['choice']
-        result: list[VariableAction] = []
-        for element in choice:
-            if x := VariableAction.from_dict(element):
-                result.append(x)
-            else:
-                num_invalid_elements += 1
-        return DerivedChoice(result)
-
-@dataclasses.dataclass(frozen=True)
-class Lhs:
-
-    lhs: str
-
-    def __str__(self) -> str:
-        return self.lhs
-
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[Lhs]:
-
-        if 'lhs' not in candidate:
-            return None
-
-        if not isinstance(candidate['lhs'], str):
-            return None
-
-        return Lhs(candidate['lhs'])
-
-@dataclasses.dataclass(frozen=True)
-class RuleSimple:
-
-    lhs: Lhs
-    derived: list[VariableOrToken]
-    action: Action
-
-    def __str__(self) -> str:
-        lbrack = '{'
-        rbrack = '}'
-        return f'{self.lhs}: {self.derived} {lbrack}{self.action}{rbrack}\n'
-
-    @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[RuleSimple]:
-
-        if 'LHS' not in candidate:
-            logging.error('LHS not found in rule 😬')
-            return None
-
-        if 'derived' not in candidate:
-            logging.error('derived not found in rule 😬')
-            return None
-
-        if 'action' not in candidate:
-            logging.error('action not found in rule 😬')
-            return None
-
-        if lhs := Lhs.from_dict(candidate['LHS']):
-            if derived := Derived.from_dict(candidate['derived']):
-                action = Action(candidate['action'])
-                if isinstance(action, str):
-                    return RuleSimple(lhs, derived, action)
-                logging.error('action not found in rule 😬')
-            else:
-                logging.error('derived not found in rule 😬')
-        else:
-            logging.error('LHS not found in rule 😬')
-
-        return None
-
-@dataclasses.dataclass(frozen=True)
-class Parser:
-
-    tokens: list[NameRegex]
-    rules: list[RuleSimple]
-
-    @staticmethod
-    def from_rules_json(filename: pathlib.Path) -> typing.Optional[list[RuleSimple]]:
-        try:
-            with filename.open() as fl:
-                data = json.load(fl)
-        except OSError:
-            logging.error('Fatal error reading: %s 😬', filename)
-            return None
-        except json.JSONDecodeError:
-            logging.error('Invalid json file: %s 😬', filename)
-            return None
-
-        if not isinstance(data, list):
-            logging.error('Invalid json schema: %s ( not a list ) 😬', filename)
-            return None
-
-        num_invalid_rules = 0
-        result: list[RuleSimple] = []
-        for rule in data:
-            if r := RuleSimple.from_dict(rule):
-                result.append(r)
-            else:
-                num_invalid_rules += 1
-
-        return result if num_invalid_rules == 0 else None
-
-    def build(self, haskell_filename: pathlib.Path) -> typing.Optional[HappyFile]:
-
-        parts = extract_parts(haskell_filename)
-        if parts is None:
-            return None
-
-        if content := self._happify_the_content():
-            return HappyFile(
-                haskell_prologue=parts[0],
-                haskell_epilogue=parts[1],
-                content=str(content)
-            )
-
-        return None
-
-    def _happify_the_content(self) -> typing.Optional[str]:
-
-        def clean(value: str) -> str:
-            return value.replace('\\', '').replace('"', '')
-
-        def tokenify(name: str, value: str):
-            return f'\'{clean(value)}\' {lbrack} {tag} {raw}_{name} _ {rbrack}'
-
-        lbrack = '{'
-        rbrack = '}'
-        tag = 'AlexTokenTag'
-        raw = 'AlexRawToken'
-        valued = ['ID', 'STR', 'INT', 'FLOAT']
-        data = { entry.name: entry.regex for entry in self.tokens }
-        macros = [f'{tokenify(name, value)}' for name, value in data.items() if name not in valued]
-
-        output = ""
-        output += PARSER_API
-        output += HAPPY_TOKEN_TYPE
-        output += MONAD
-        output += ERROR_HANDLER
-        output += "\n%token\n\n"
-        output += '\n'.join(macros) + '\n'
-        output += VALUED_HAPPY_TOKENS
-        output += GRAMMAR_START + '\n'
-        output += '\n'.join([str(rule) for rule in self.rules])
-
-        return output
+@dataclasses.dataclass(frozen=True, kw_only=True)
+class NameRegex:
+
+    name: str
+    regex: str
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class AlexFile:
@@ -656,12 +346,6 @@ class AlexFile:
     def store(self, filename: str) -> None:
         with open(filename, 'w', encoding='utf-8') as fl:
             fl.write(str(self))
-
-@dataclasses.dataclass(frozen=True, kw_only=True)
-class NameRegex:
-
-    name: str
-    regex: str
 
 @dataclasses.dataclass(frozen=True)
 class Lexer:
@@ -721,15 +405,176 @@ class Lexer:
 
         return None
 
-RULES = [
-    RuleSimple(
+@dataclasses.dataclass(frozen=True)
+class HappyFile:
+
+    haskell_prologue: str
+    haskell_epilogue: str
+    content: str
+
+    def __str__(self) -> str:
+        return (
+            '{\n' + self.haskell_prologue + '\n}\n\n' +
+            self.content + '\n\n' +
+            '{\n' + self.haskell_epilogue + '}\n'
+        )
+
+    def store(self, filename: str) -> None:
+        with open(filename, 'w', encoding='utf-8') as fl:
+            fl.write(str(self))
+
+@dataclasses.dataclass(frozen=True)
+class Parser:
+
+    tokens: list[NameRegex]
+    rules: list[Rule]
+
+    def build(self, haskell_filename: pathlib.Path) -> typing.Optional[HappyFile]:
+
+        parts = extract_parts(haskell_filename)
+        if parts is None:
+            return None
+
+        if content := self._happify_the_content():
+            return HappyFile(
+                haskell_prologue=parts[0],
+                haskell_epilogue=parts[1],
+                content=str(content)
+            )
+
+        return None
+
+    def _happify_the_content(self) -> typing.Optional[str]:
+
+        def clean(value: str) -> str:
+            return value.replace('"', '')
+
+        def tokenify(name: str, value: str):
+            if name != 'SLASH':
+                return f'\'{clean(value)}\' {lbrack} {tag} {raw}_{name} _ {rbrack}'
+            
+            return f'\'\\\\\' {lbrack} {tag} {raw}_{name} _ {rbrack}'
+
+        lbrack = '{'
+        rbrack = '}'
+        tag = 'AlexTokenTag'
+        raw = 'AlexRawToken'
+        valued = ['ID', 'STR', 'INT', 'FLOAT']
+        data = { entry.name: entry.regex for entry in self.tokens }
+        macros = [f'{tokenify(name, value)}' for name, value in data.items() if name not in valued]
+
+        output = ""
+        output += PARSER_API
+        output += HAPPY_TOKEN_TYPE
+        output += MONAD
+        output += THE_LEXER
+        output += ERROR_HANDLER
+        output += "\n%token\n\n"
+        output += '\n'.join(macros) + '\n'
+        output += VALUED_HAPPY_TOKENS
+        output += GRAMMAR_START
+        output += PARAMETRIZED_RULES
+        output += PROGRAM_STARTS
+        output += '\n'.join([str(rule) for rule in self.rules])
+
+        return output
+
+@dataclasses.dataclass(frozen=True)
+class Derived(abc.ABC):
+    @abc.abstractmethod
+    def __str__(self) -> str:
+        ...
+
+@dataclasses.dataclass(frozen=True)
+class Variable(Derived):
+
+    variable: str
+
+    @typing.override
+    def __str__(self) -> str:
+        return self.variable
+
+@dataclasses.dataclass(frozen=True)
+class Token(Derived):
+
+    token: str
+
+    @typing.override
+    def __str__(self) -> str:
+        valued_tokens = ['INT', 'ID', 'STR', 'FLOAT']
+        if self.token in valued_tokens:
+            return self.token
+        
+        return f'\'{self.token}\''
+
+@dataclasses.dataclass(frozen=True)
+class Parametrized(Derived):
+
+    kind: str
+    variable: Variable
+
+    @typing.override
+    def __str__(self) -> str:
+        return f'{self.kind}({self.variable})'
+
+@dataclasses.dataclass(frozen=True)
+class Action:
+
+    action: str
+
+    def __str__(self) -> str:
+        return self.action
+
+@dataclasses.dataclass(frozen=True)
+class Lhs:
+
+    lhs: str
+
+    def __str__(self) -> str:
+        return self.lhs
+
+@dataclasses.dataclass(frozen=True)
+class Rule(abc.ABC):
+    @abc.abstractmethod
+    def __str__(self) -> str:
+        ...
+
+@dataclasses.dataclass(frozen=True)
+class RuleChoice(Rule):
+
+    lhs: Lhs
+    content: list[Variable]
+
+    @typing.override
+    def __str__(self) -> str:
+        lbrack = '{'
+        rbrack = '}'
+        choices = ' |\n'.join([f'{element} {lbrack} $1 {rbrack}' for element in self.content])
+        return f'{self.lhs}:\n{choices}\n'
+
+@dataclasses.dataclass(frozen=True)
+class RuleSequence(Rule):
+
+    lhs: Lhs
+    derived: list[Derived]
+    action: Action
+
+    @typing.override
+    def __str__(self) -> str:
+        lbrack = '{'
+        rbrack = '}'
+        derived = ' '.join([f'{element}' for element in self.derived])
+        return f'{self.lhs}: {derived}\n{lbrack}\n{self.action}\n{rbrack}\n'
+
+RULES: list[Rule] = [
+    RuleSequence(
         Lhs('program'),
         [
             Variable('stmts')
         ],
         Action("Ast.Root { Ast.filename = \"DDD\", Ast.stmts = $1 }")
     ),
-    RuleSimple(
+    RuleSequence(
         Lhs('stmts'),
         [
             Parametrized(
@@ -737,30 +582,100 @@ RULES = [
                 Variable('numbered_stmt')
             )
         ],
-        Action("$1")
+        Action('$1')
+    ),
+    RuleSequence(
+        Lhs('numbered_stmt'),
+        [
+            Token('INT'),
+            Token(':'),
+            Variable('stmt')
+        ],
+        Action('$3')
+    ),
+    RuleSequence(
+        Lhs('stmt_namespace'),
+        [
+            Token('Stmt_Namespace'),
+            Variable('loc'),
+            Token('('),
+            Token('name'),
+            Token(':'),
+            Variable('Name'),
+            Token('stmts'),
+            Token(':'),
+            Variable('stmts')
+        ],
+        Action('\n'.join([
+            '    Ast.StmtBlock $ Ast.StmtBlockContent',
+            '    {',
+            '        Ast.stmtBlockContent = $9,',
+            '        Ast.stmtBlockLocation = $2',
+            '    }'
+        ]))
+    ),
+    RuleChoice(
+        Lhs('stmt'),
+        [
+            Variable('stmt_namespace')
+        ],
+    ),
+    RuleSequence(
+        Lhs('Name'),
+        [
+            Token('Name'),
+            Variable('loc'),
+            Token('('),
+            Token('name'),
+            Token(':'),
+            Variable('TokenID'),
+            Token(')')
+        ],
+        Action('$6')
+    ),
+    RuleSequence(
+        Lhs('TokenID'),
+        [
+            Token('ID')
+        ],
+        Action('tokIDValue $1')
+    ),
+    RuleSequence(
+        Lhs('loc'),
+        [
+            Token('['),
+            Token('INT'),
+            Token(':'),
+            Token('INT'),
+            Token('-'),
+            Token('INT'),
+            Token(':'),
+            Token('INT'),
+            Token(']')
+        ],
+        Action('Location { Location.filename = getFilename $1, lineStart = fromIntegral (tokIntValue $2), colStart = fromIntegral (tokIntValue $4), lineEnd = fromIntegral (tokIntValue $6), colEnd = fromIntegral (tokIntValue $8)}')
     )
 ]
 
-def main() -> None:
-    if args := Argparse.run():
-        tokens_json_filename = args.tokens_json_filename
-        lexer_haskell_filename = args.lexer_haskell_filename
-        rules_json_filename = args.rules_json_filename
-        parser_haskell_filename = args.parser_haskell_filename
-        alex_output_filename = args.alex_output_filename
-        happy_output_filename = args.happy_output_filename
-        tokens = from_tokens_json(tokens_json_filename)
-        if tokens is None:
-            return
+def generate_parser(args: Argparse) -> None:
 
-        lexer = Lexer(tokens)
-        if alex_file := lexer.build(lexer_haskell_filename):
-            alex_file.store(alex_output_filename)
+    tokens_json_filename = args.tokens_json_filename
+    lexer_haskell_filename = args.lexer_haskell_filename
+    parser_haskell_filename = args.parser_haskell_filename
+    alex_output_filename = args.alex_output_filename
+    happy_output_filename = args.happy_output_filename
+    tokens = from_tokens_json(tokens_json_filename)
+    if tokens is None:
+        return
 
-        if rules := Parser.from_rules_json(rules_json_filename):
-            parser = Parser(tokens, rules)
-            if happy_file := parser.build(parser_haskell_filename):
-                happy_file.store(happy_output_filename)
+    lexer = Lexer(tokens)
+    if alex_file := lexer.build(lexer_haskell_filename):
+        alex_file.store(alex_output_filename)
+
+    parser = Parser(tokens, RULES)
+    if happy_file := parser.build(parser_haskell_filename):
+        happy_file.store(happy_output_filename)
 
 if __name__ == "__main__":
-    main()
+    if args := Argparse.run():
+        generate_parser(args)
