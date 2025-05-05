@@ -4,10 +4,10 @@ services:
             context: native_php_parser
             dockerfile: Dockerfile
         ports:
-            - 443:443
+            - 5000:5000
     parser:
         build:
             context: dhscanner_ast_parser
             dockerfile: Dockerfile
         ports:
-            - 443:443
+            - 3000:3000

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import glob
 import os
+import re
 import sys
 import json
 import openai
@@ -43,8 +44,9 @@ class Argparse:
     @staticmethod
     def run() -> typing.Optional[Argparse]:
 
-        logging.info('>>>>>>>>>>>>>>>>>>>>>> LFG')
+        logging.info('')
         logging.info('checking required args 👀')
+        logging.info('')
 
         parser = argparse.ArgumentParser(
             description=ARGPARSE_PROG_DESC
@@ -78,7 +80,7 @@ class Argparse:
             '--parsing_status',
             required=True,
             type=str,
-            metavar="<Ast>.hs",
+            metavar="<parse_status>.json",
             help=ARGPARSE_CONTENT_HELP
         )
 
@@ -204,7 +206,8 @@ def collect(workdir: str) -> None:
     filenames = glob.glob(f'{workdir}/**/*.php', recursive=True)
     for filename in filenames:
         if os.path.isfile(filename):
-            files.append(filename)
+            normalized = filename.replace("\\", "/")
+            files.append(normalized)
 
     return files
 
@@ -218,10 +221,23 @@ def read_single_file(filename: str):
 
     return { 'source': (filename, code) }
 
+CSRF_TOKEN_URL: typing.Final[str] = 'http://127.0.0.1:5000/csrf_token'
+
 def get_native_ast(filename: str) -> str:
-    url = NATIVE_PHP_PARSER_URL
-    one_file_at_a_time = read_single_file(filename)
-    response = requests.post(url, files=one_file_at_a_time)
+
+    session = requests.Session()
+    response = session.get(CSRF_TOKEN_URL)
+    token = response.text
+    cookies = session.cookies
+    headers = { 'X-CSRF-TOKEN': token }
+
+    response = session.post(
+        NATIVE_PHP_PARSER_URL,
+        files=read_single_file(filename),
+        headers=headers,
+        cookies=cookies
+    )
+
     return response.text
 
 def get_dhscanner_status_for(filename: str, native_ast: str) -> dict:
@@ -229,18 +245,46 @@ def get_dhscanner_status_for(filename: str, native_ast: str) -> dict:
     url = DHSCANNER_PARSER_URL
     content = { 'filename': filename, 'content': native_ast}
     response = requests.post(f'{url}?filename={filename}', json=content)
-    return { 'filename': filename, 'status': response.text }
+    return { 'filename': filename, 'status': json.loads(response.text) }
+
+def extract_location(message: str) -> typing.Optional[dict]:
+
+    pattern = (
+        r'lineStart = (\d+), '
+        r'lineEnd = (\d+), '
+        r'colStart = (\d+), '
+        r'colEnd = (\d+)'
+    )
+
+    match = re.search(pattern, message)
+
+    # print(match)
+    # print(message)
+
+    if match:
+        line_start, line_end, col_start, col_end = match.groups()
+        return {
+            "lineStart": int(line_start),
+            "lineEnd": int(line_end),
+            "colStart": int(col_start),
+            "colEnd": int(col_end)
+        }
+
+    return None
 
 def generate_initial_parse_status(parsing_status_json_filename: str) -> None:
 
-    filenames = collect('benchmark/php')
-    status: dict[str, str]
+    filenames = collect('benchmark/single')
+    status: dict[str, dict] = {}
     for filename in filenames:
         native_ast = get_native_ast(filename)
         parse_status = get_dhscanner_status_for(filename, native_ast)
-        status[filename] = parse_status
+        message = parse_status['status']['message']
+        if location := extract_location(message):
+            status[filename] = location
 
-    return status
+    with open(parsing_status_json_filename, 'w') as fl:
+        json.dump(status, fl, indent=4)
 
 def launch_services_successfully(docker_compose_yaml_filename: str) -> bool:
 
@@ -271,9 +315,9 @@ if __name__ == "__main__":
 
     if args := Argparse.run():
 
-        if launch_services_successfully('compose.parsers.yaml'):
-            generate_initial_parse_status(args.parsing_status_json_filename)
-            main(args)
+        #if launch_services_successfully('compose.parsers.yaml'):
+        generate_initial_parse_status(args.parsing_status_json_filename)
+        #main(args)
         
         # Arrrggghhhh ...
-        logging.error('Failed to launch parsing dockers')
+        #logging.error('Failed to launch parsing dockers')
