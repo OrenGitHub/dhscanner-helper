@@ -183,11 +183,11 @@ VALUED_TOKENS: typing.Final[str] = """
 -- *                          *
 -- ****************************
 
-@KW_ID    { lex  AlexRawToken_ID                    }
-@KW_INT   { lex (AlexRawToken_INT . round . read)   }
-@KW_STR   { lex AlexRawToken_STR                    }
-@KW_FLOAT { lex (AlexRawToken_FLOAT . round . read) }
-.         { lexicalError                            }
+@ID    { lex  AlexRawToken_ID                    }
+@INT   { lex (AlexRawToken_INT . round . read)   }
+@STR   { lex AlexRawToken_STR                    }
+@FLOAT { lex (AlexRawToken_FLOAT . round . read) }
+.      { lexicalError                            }
 
 """
 
@@ -370,14 +370,14 @@ class Lexer:
     def _alexify_content(self) -> typing.Optional[str]:
 
         def rulify(name: str) -> str:
-            return f'{name} {{ lex\' AlexRawToken_{name} }}'
+            return f'@{name} {{ lex\' AlexRawToken_{name} }}'
 
         def variantify(name: str) -> str:
             return f'   | AlexRawToken_{name}'
 
         valued_tokens = ['ID', 'STR', 'INT', 'FLOAT']
         data = { entry.name: entry.regex for entry in self.data }
-        macros = [f'@KW_{name} = {regex}' for name, regex in data.items()]
+        macros = [f'@{name} = {regex}' for name, regex in data.items()]
         rules = [rulify(name) for name in data.keys() if name not in valued_tokens]
         variants = [variantify(name) for name in data.keys() if name not in valued_tokens]
 
