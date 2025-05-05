@@ -1,0 +1,6 @@
+# Autogen files
+Lexer.php.x
+Parser.php.y
+
+# IDEs
+ .vscode

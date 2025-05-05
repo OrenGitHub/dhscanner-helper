@@ -414,6 +414,26 @@ class Token(VariableOrToken):
         return Token(candidate['token'])
 
 @dataclasses.dataclass(frozen=True)
+class Parametrized:
+
+    kind: str
+    variable: Variable
+
+    def __str__(self) -> str:
+        return f'{self.kind}({self.variable})'
+
+    @typing.override
+    @staticmethod
+    def from_dict(candidate: dict) -> typing.Optional[Parametrized]:
+        if 'token' not in candidate:
+            return None
+
+        if not isinstance(candidate['token'], str):
+            return None
+
+        return Parametrized(candidate['token'])
+
+@dataclasses.dataclass(frozen=True)
 class Action:
 
     action: str
@@ -425,7 +445,7 @@ class Action:
 class VariableAction:
 
     variable: Lhs
-    action: Action
+    # action: Action
 
     def __str__(self) -> str:
         lbrack = '{'
@@ -438,12 +458,12 @@ class VariableAction:
         if 'variable' not in candidate:
             return None
 
-        if 'action' not in candidate:
-            return None
+        #if 'action' not in candidate:
+        #    return None
 
         v = Lhs(candidate['variable'])
-        action = Action(candidate['action'])
-        return VariableAction(v, action)
+        # action = Action(candidate['action'])
+        return VariableAction(v)
 
 @dataclasses.dataclass(frozen=True)
 class DerivedSequence(Derived):
@@ -518,10 +538,10 @@ class Lhs:
         return Lhs(candidate['lhs'])
 
 @dataclasses.dataclass(frozen=True)
-class Rule:
+class RuleSimple:
 
     lhs: Lhs
-    derived: Derived
+    derived: list[VariableOrToken]
     action: Action
 
     def __str__(self) -> str:
@@ -530,7 +550,7 @@ class Rule:
         return f'{self.lhs}: {self.derived} {lbrack}{self.action}{rbrack}\n'
 
     @staticmethod
-    def from_dict(candidate: dict) -> typing.Optional[Rule]:
+    def from_dict(candidate: dict) -> typing.Optional[RuleSimple]:
 
         if 'LHS' not in candidate:
             logging.error('LHS not found in rule 😬')
@@ -548,7 +568,7 @@ class Rule:
             if derived := Derived.from_dict(candidate['derived']):
                 action = Action(candidate['action'])
                 if isinstance(action, str):
-                    return Rule(lhs, derived, action)
+                    return RuleSimple(lhs, derived, action)
                 logging.error('action not found in rule 😬')
             else:
                 logging.error('derived not found in rule 😬')
@@ -561,10 +581,10 @@ class Rule:
 class Parser:
 
     tokens: list[NameRegex]
-    rules: list[Rule]
+    rules: list[RuleSimple]
 
     @staticmethod
-    def from_rules_json(filename: pathlib.Path) -> typing.Optional[list[Rule]]:
+    def from_rules_json(filename: pathlib.Path) -> typing.Optional[list[RuleSimple]]:
         try:
             with filename.open() as fl:
                 data = json.load(fl)
@@ -580,9 +600,9 @@ class Parser:
             return None
 
         num_invalid_rules = 0
-        result: list[Rule] = []
+        result: list[RuleSimple] = []
         for rule in data:
-            if r := Rule.from_dict(rule):
+            if r := RuleSimple.from_dict(rule):
                 result.append(r)
             else:
                 num_invalid_rules += 1
@@ -714,6 +734,26 @@ class Lexer:
             return Lexer(data=data)
 
         return None
+
+RULES = [
+    RuleSimple(
+        Lhs('program'),
+        [
+            Variable('stmts')
+        ],
+        Action("Ast.Root { Ast.filename = \"DDD\", Ast.stmts = $1 }")
+    ),
+    RuleSimple(
+        Lhs('stmts'),
+        [
+            Parametrized(
+                'possibly_empty_arrayof',
+                Variable('numbered_stmt')
+            )
+        ],
+        Action("$1")
+    )
+]
 
 def main() -> None:
     if args := Argparse.run():
